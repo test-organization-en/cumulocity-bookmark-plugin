@@ -36,11 +36,11 @@ jobs:
       - name: Update package.json version
         run: |
           mv package.json package.tmp.json
-          cat package.tmp.json | jq '.version = "${{fromJson(steps.set_var.outputs.package).contextPath}}-${{ github.sha }}"' > package.json
+          cat package.tmp.json | jq '.version = "${{format('{0}-{1}', fromJson(steps.set_var.outputs.package).contextPath, github.sha)}}"' > package.json
           rm package.tmp.json
   
       - name: Deployment
         run: |
           npm install
           npm run build
-          npm run deploy -- -u ${{ vars.ENVIRONMENT_URL }} -U ${{ vars.USER_NAME }} -P ${{ vars.PASSWORD }} --app.contextPath="${{fromJson(steps.set_var.outputs.package).contextPath}}-${{ steps.extract_branch.outputs.branch }}"
+          npm run deploy -- -u ${{ vars.ENVIRONMENT_URL }} -U ${{ vars.USER_NAME }} -P ${{ vars.PASSWORD }} --app.contextPath="${{format('{0}-{1}', fromJson(steps.set_var.outputs.package).contextPath, steps.extract_branch.outputs.branch) }}"
