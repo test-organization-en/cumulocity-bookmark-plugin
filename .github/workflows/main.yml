@@ -35,7 +35,6 @@ jobs:
           
       - name: Update package.json version
         run: |
-          cd .tmp/${{ matrix.app }}
           mv package.json package.tmp.json
           cat package.tmp.json | jq '.version = "${{fromJson(steps.set_var.outputs.package).contextPath}}-${{ github.sha }}"' > package.json
           rm package.tmp.json
