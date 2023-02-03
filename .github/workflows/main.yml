@@ -27,7 +27,7 @@ jobs:
       - name: Extract packageJSON
         id: set_var
         run: |
-          content=`cat ./path/to/package.json`
+          content=`cat ./package.json`
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
@@ -39,6 +39,7 @@ jobs:
           mv package.json package.tmp.json
           cat package.tmp.json | jq '.version = "${{fromJson(steps.set_var.outputs.package).contextPath}}-${{ github.sha }}"' > package.json
           rm package.tmp.json
+  
       - name: Deployment
         run: |
           npm install
