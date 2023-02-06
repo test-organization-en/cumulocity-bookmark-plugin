@@ -27,20 +27,17 @@ jobs:
       - name: Extract packageJSON
         id: set_var
         run: |
-          content=`cat package.json`
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          echo "::set-output name=packageJson::$content"
+          JSON=$(cat ./package.json)
+          echo "::set-output name=matrix::${JSON//'%'/'%25'}"
           
       - name: Update package.json version
         run: |
           mv package.json package.tmp.json
-          cat package.tmp.json | jq '.version = "${{format('{0}-{1}', fromJson(steps.set_var.outputs.packageJson).contextPath, github.sha)}}"' > package.json
+          cat package.tmp.json | jq '.version = "${{format('{0}-{1}', fromJson(steps.set_var.outputs.matrix).contextPath, github.sha)}}"' > package.json
           rm package.tmp.json
   
       - name: Deployment
         run: |
           npm install
           npm run build
-          npm run deploy -- -u ${{ vars.ENVIRONMENT_URL }} -U ${{ vars.USER_NAME }} -P ${{ vars.PASSWORD }} --app.contextPath="${{format('{0}-{1}', fromJson(steps.set_var.outputs.packageJson).contextPath, steps.extract_branch.outputs.branch) }}"
+          npm run deploy -- -u ${{ vars.ENVIRONMENT_URL }} -U ${{ vars.USER_NAME }} -P ${{ vars.PASSWORD }} --app.contextPath="${{format('{0}-{1}', fromJson(steps.set_var.outputs.matrix).contextPath, steps.extract_branch.outputs.branch) }}"
