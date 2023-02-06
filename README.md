@@ -1,6 +1,8 @@
 # Cumulocity bookmark plugin
 This plugin allows you to bookmark devices to the navigator to access them quickly.
 
+Just a test.
+
 ![Image](img/bookmark-plugin.gif)
 
 ______________________
