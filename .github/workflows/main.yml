@@ -15,25 +15,7 @@ jobs:
   run-npm-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-        
-      - name: Extract packageJSON
-        id: set_var
-        run: |
-          echo "PACKAGE_JSON=$(jq -c . < package.json)" >> $GITHUB_ENV
-          
-      - name: Update package.json version
-        run: |
-          mv package.json package.tmp.json
-          cat package.tmp.json | jq '.version = "${{format('{0}-{1}', fromJson(env.PACKAGE_JSON).version, github.sha)}}"' > package.json
-          rm package.tmp.json
-  
-      - name: Deployment
-        run: |
-          npm install
-          npm run build
-          npm run deploy -- -u ${{ vars.ENVIRONMENT_URL }} -U ${{ vars.USER_NAME }} -P ${{ vars.PASSWORD }} --app.contextPath="${{format('{0}-{1}', fromJson(env.PACKAGE_JSON).c8y.application.contextPath, steps.extract_branch.outputs.branch) }}"
+      - name: repo-connect-poc-test
+        # You may pin to the exact commit or the version.
+        # uses: eniosultan/test@b4a696e7c91c96f7801e9d268317b523033c0d08
+        uses: eniosultan/test@0.1
